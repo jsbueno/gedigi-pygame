@@ -17,7 +17,7 @@ class QuitEditor(Exception):
     pass
 
 def setup():
-    global SCREEN
+    global SCREEN, FONT
     pygame.init()
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     FONT = default_font()
@@ -466,11 +466,11 @@ if __name__ == "__main__":
     pygame.display.flip()
     editor = Editor(SCREEN, (15, 15, 745, 545), text="""pythonbrasil[6]""", font=FONT)
     #editor.add_line_effect(Colors)
-    editor.add_line_effect(Waves, amplitude=0.3, align="center")
+    #editor.add_line_effect(Waves, amplitude=0.3, align="center")
     #editor.add_char_effect(CharWalk)
-    editor.add_char_effect(CharTranslucence, duration=7)
-    editor.add_char_effect("CharImplode", scale=10, duration=10)
-    editor.add_char_effect(CharRot, angle=-60, scale=1.5, duration=10)
+    editor.add_char_effect(CharTranslucence, duration=60)
+    #editor.add_char_effect("CharImplode", scale=10, duration=10)
+    #editor.add_char_effect(CharRot, angle=-60, scale=1.5, duration=10)
     try:
         while True:
             pygame.event.pump()
