@@ -17,10 +17,14 @@ class QuitEditor(Exception):
     pass
 
 def setup():
-    global SCREEN, FONT
+    global SCREEN
     pygame.init()
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-    FONT = pygame.font.Font ("VeraSeBd.ttf", 25)
+    FONT = default_font()
+    
+def default_font():
+    #FIXME: Load from the directory where the module is isntalled
+    return pygame.font.Font ("VeraSeBd.ttf", 25)
 
 class KeyboardMaps(object):
     # Dead key and unicode composition data
@@ -285,7 +289,7 @@ class Editor(KeyboardMaps):
         else:
             self.rect = pygame.rect.Rect(rect)
         if font is None:
-            self.font = pygame.font.Font ("VeraSeBd.ttf", 25)
+            self.font = default_font()
         else:
             self.font = font
         if clip is None:
@@ -378,11 +382,18 @@ class Editor(KeyboardMaps):
         for char in text:
             self.text.insert(position, char, bool(self.char_effects))
             position += 1
+            
+    def delete(self, position, n=1):
+        for i in range(n):
+            self.text.delete(position)
 
     def update(self):
         original_clip = self.screen.get_clip()
         self.screen.set_clip(self.clip)
-        pygame.draw.rect(self.screen, self.background , self.rect)
+        if self.background is not None:
+            pygame.draw.rect(self.screen, self.background , self.rect)
+        else:
+            pygame.screen.fill((0,0,0,0))
         surfaces = self.text.render()
         
         surfaces = self.apply_line_effects(surfaces)
@@ -403,9 +414,13 @@ class Editor(KeyboardMaps):
         to_die = []
         for pos, char in effected_chars.items():
             result = char.update()
-            self.screen.blit(char.surface,
-                 linecoords[char.line] + char.pix_pos +
-                 char.pix_offset)
+            # FIXME: Check why dow e get this attributeerror sometimes
+            try:
+                self.screen.blit(char.surface,
+                    linecoords[char.line] + char.pix_pos +
+                    char.pix_offset)
+            except AttributeError:
+                pass
             if result <= DURATIONENDED:
                 to_die.append(pos)
         for dying in to_die:
@@ -443,7 +458,7 @@ class Editor(KeyboardMaps):
     def add_line_effect(self, effect, **parameters):
         self.effects.append(LineEffect(effect, **parameters))
         
-__all__ = [Editor, effects, pygame]
+__all__ = ["Editor", "effects", "pygame"]
         
 if __name__ == "__main__":
     setup()

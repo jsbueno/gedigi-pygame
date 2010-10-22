@@ -310,4 +310,4 @@ class Colors(BaseLineEffect):
         return slice, 0
         
 __all__ = [name for name, class_ in globals().items() if isinstance(class_, type) and ( (issubclass(class_, BaseCharEffect) and not class_ is BaseCharEffect) 
-                                         or (issubclass(class_, BaseLineEffect) and not class_ is BaseLineEffect))]  
+                                         or (issubclass(class_, BaseLineEffect) and not class_ is BaseLineEffect))]  + ["CharEffect"]
