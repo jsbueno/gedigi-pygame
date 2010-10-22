@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 # coding: utf-8
 
 import pygame
@@ -6,6 +7,7 @@ from pygame.locals import *
 
 import unicodedata
 
+import effects
 from effects import Waves, Colors, EffectedChar, CharEffect, LineEffect, CharWalk, CharTranslucence, CharRot, CharImplode
 from editor_utils import  DURATIONENDED, Coord, dirties, clears, cached
 
@@ -303,6 +305,7 @@ class Editor(KeyboardMaps):
         self.char_effects = []
         self.set_keymap(keymap)
         self.last_char = None
+        self.show_cursor = True
         self.update()
     
     def effect_callback(self, index, value):
@@ -411,7 +414,7 @@ class Editor(KeyboardMaps):
             self.text.dirty()
         
     def draw_cursor(self):
-        if not (self.phase // self.cursor_rate) % 2:
+        if not self.show_cursor or not (self.phase // self.cursor_rate) % 2:
             return
         cursor_rect = self.text.get_cursor_rect(self.cursor)
         pygame.draw.rect(self.screen, self.cursor_color,
@@ -440,19 +443,19 @@ class Editor(KeyboardMaps):
     def add_line_effect(self, effect, **parameters):
         self.effects.append(LineEffect(effect, **parameters))
         
+__all__ = ["Editor", "effects", "pygame"]
+        
 if __name__ == "__main__":
     setup()
-    pygame.draw.rect(SCREEN, (255,255,255), (10, 10, 600, 200), 3 )
+    pygame.draw.rect(SCREEN, (255,255,255), (10, 10, 755, 555), 3 )
     pygame.display.flip()
-    editor = Editor(SCREEN, (15, 15, 590, 190), text="""Unicamp -  IA """, font=FONT)
-    """cows cows cows MOOOOOOooooooo cows go moo when they poo cows   Tractoooorrr   I mmilk my cows moooooo mooo mooo tractor  i am a farmer  mooooooooooooooo  tractor"""
-    #
+    editor = Editor(SCREEN, (15, 15, 745, 545), text="""pythonbrasil[6]""", font=FONT)
     #editor.add_line_effect(Colors)
-    #editor.add_line_effect(Waves, amplitude=0.3, align="center")
+    editor.add_line_effect(Waves, amplitude=0.3, align="center")
     #editor.add_char_effect(CharWalk)
-    #editor.add_char_effect(CharTranslucence)
-    editor.add_char_effect("CharImplode")
-    editor.add_char_effect(CharRot, angle=-720, scale=1.5, duration=45)
+    editor.add_char_effect(CharTranslucence, duration=7)
+    editor.add_char_effect("CharImplode", scale=10, duration=10)
+    editor.add_char_effect(CharRot, angle=-60, scale=1.5, duration=10)
     try:
         while True:
             pygame.event.pump()

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
 import pygame
 from pygame.locals import *
@@ -308,3 +308,6 @@ class Colors(BaseLineEffect):
         # pygame.surfarray.blit_array(slice, pixels)
         del pixels
         return slice, 0
+        
+__all__ = [name for name, class_ in globals().items() if isinstance(class_, type) and ( (issubclass(class_, BaseCharEffect) and not class_ is BaseCharEffect) 
+                                         or (issubclass(class_, BaseLineEffect) and not class_ is BaseLineEffect))]  
