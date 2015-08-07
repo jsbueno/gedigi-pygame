@@ -1,0 +1,1 @@
+Project created under a pygame workshop at UNICAMP/Campinas Brasil -the intent is for the workshop projects outlive the classes and become enjoyable programs on their own
