@@ -31,14 +31,14 @@ class KeyboardMaps(object):
     # as used in pt_BR. Expand for other langs, FIXME
     # for diferentiation in case of composition conflicts
     unicode_composition = {
-    u"`": u"\u0300",
-    u"'": u"\u0301",
-    u"^": u"\u0302",
-    u"~": u"\u0303",
-    u"¨": u"\u0308",
+    "`": "\u0300",
+    "'": "\u0301",
+    "^": "\u0302",
+    "~": "\u0303",
+    "¨": "\u0308",
     # can't get a shift + 6 = "¨" from pygame as well.
     # compositing " as ¨ as a workaround
-    u'"': u"\u0308"
+    '"': "\u0308"
     }
     # keyboard maps: just create a string with every key with a
     # shift symbol, followed by its symbol
@@ -47,9 +47,9 @@ class KeyboardMaps(object):
     # do not even generate a keypressed event :-(
     # (discovery: with shift, one gets a 0x00 key code for
     # the them accent - hardcoding the grave accent at least)
-    map_pt_BR = u"'\"1!2@3#4$5%6¨7&8*9(0)-_=+[{~^]},<.>;:\|/?"
-    map_alt_pt_BR = u"\"¬1¹2²3³4£5¢6¬7{8[9]0}-\=§q/w?e€r®tŧy←u↓i→oøpþ[ªaæsßdðfđgŋhħjjkĸlł]ºz«x»c©v“b”mµ,─.·\º/°"
-    map_alt_shift_pt_BR = u"1¡2½3¾4¼5⅜6¨7⅞8™9±0°-¿=˛tŦy¥iıoØpÞ[¯aÆs§dÐfªgŊhĦjJk&lŁç˝z<x>c©v‘b’,×.÷;˙\˘/¿"
+    map_pt_BR = "'\"1!2@3#4$5%6¨7&8*9(0)-_=+[{~^]},<.>;:\|/?"
+    map_alt_pt_BR = "\"¬1¹2²3³4£5¢6¬7{8[9]0}-\=§q/w?e€r®tŧy←u↓i→oøpþ[ªaæsßdðfđgŋhħjjkĸlł]ºz«x»c©v“b”mµ,─.·\º/°"
+    map_alt_shift_pt_BR = "1¡2½3¾4¼5⅜6¨7⅞8™9±0°-¿=˛tŦy¥iıoØpÞ[¯aÆs§dÐfªgŊhĦjJk&lŁç˝z<x>c©v‘b’,×.÷;˙\˘/¿"
 
     def set_keymap(self, keymap_name):
         try:
@@ -58,7 +58,7 @@ class KeyboardMaps(object):
             keymap_alt_shift = getattr(Editor, "map_alt_shift_" + keymap_name)
         except AttributeError:
             raise ValueError ("Unknown Keymap")
-        keymaper = lambda key_map: dict((key_map[i], key_map[i + 1]) for i in xrange(0, len(key_map), 2))
+        keymaper = lambda key_map: dict((key_map[i], key_map[i + 1]) for i in range(0, len(key_map), 2))
         self.keymap = keymaper(keymap)
         self.keymap_alt = keymaper(keymap_alt)
         self.keymap_alt_shift = keymaper(keymap_alt_shift)
@@ -106,7 +106,7 @@ class Text(object):
     def _render_line(self, this_line, line, line_offset):
         #FIXME: for words wider than self.width
         if isinstance(this_line, list):
-            this_line = u"".join(this_line)
+            this_line = "".join(this_line)
         self.lines.append(this_line)
         surface = self.font.render(this_line, True, self.color)
         x = 0 
@@ -115,7 +115,7 @@ class Text(object):
             true_index = index + line_offset
             if true_index in self.effected_chars:
                 if line_part:
-                    x += self.font.size(u"".join(line_part))[0]
+                    x += self.font.size("".join(line_part))[0]
                     line_part = []
                 width = self.font.size(char)[0]
                 ef = self.effected_chars[true_index]
@@ -170,11 +170,8 @@ class Text(object):
         self.offset_effected(index, -1)
     
     def offset_effected (self, index, offset):
-        if offset < 0:
-            comp = cmp
-        else:
-            comp = lambda a, b: -cmp(a, b)
-        for effected in sorted(self.effected_chars.keys(), comp):
+        revert = offset >= 0
+        for effected in sorted(self.effected_chars.keys(), reverse=revert):
             if effected < index:
                 continue
             if effected > index:
@@ -194,9 +191,9 @@ class Text(object):
         this_line = []
         line_offset = 0
         for word in self._words():
-            tentative_line = u"".join(this_line) + word
+            tentative_line = "".join(this_line) + word
             if self.font.size(tentative_line)[0] > self.width:
-                str_this_line = u"".join(this_line)
+                str_this_line = "".join(this_line)
                 self._render_line(str_this_line, line_number, line_offset)
                 line_offset += len(str_this_line)
                 line_number += 1
@@ -205,7 +202,7 @@ class Text(object):
                 this_line.append(word)
         else:
             if this_line:
-                self._render_line(u"".join(this_line), line_number, line_offset)
+                self._render_line("".join(this_line), line_number, line_offset)
         self.rendered += 1
         return self.surf_lines
     
@@ -270,7 +267,7 @@ class Text(object):
         #return pos + v_mov * len(self.lines[line])
         h_pix_pos, fh = self.font.size(self.lines[line][:h_pos])
         new_h_pos = self._nearest_h_pos(new_line, h_pix_pos, h_pos)
-        return sum(len(self.lines[i]) for i in xrange(new_line)) + new_h_pos
+        return sum(len(self.lines[i]) for i in range(new_line)) + new_h_pos
 
     def dirty(self):
         self._dirty = True
@@ -342,15 +339,15 @@ class Editor(KeyboardMaps):
         elif key == K_DOWN:
             self.cursor = self.text.cursor_vert(self.cursor, 1)
         elif key == 0 and shift: # SDL pt_BR map bug, see above
-            char = u"`"
+            char = "`"
         # FIXME: pt_BR keyboard specific:
-        elif key == ord(u"ç"):
+        elif key == ord("ç"):
             if shift:
-                char = u"Ç"
+                char = "Ç"
             else:
-                char = u"ç"
+                char = "ç"
         elif 32 <= key <= 127:
-            char = unichr(key)
+            char = chr(key)
             
             if char in self.keymap_alt_shift and alt and shift:
                 char = self.keymap_alt_shift[char]
