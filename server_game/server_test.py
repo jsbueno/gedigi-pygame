@@ -1,5 +1,5 @@
-import SimpleXMLRPCServer as XMLRPC
-import xmlrpclib
+import xmlrpc.server as XMLRPC
+import xmlrpc.client as xmlrpclib
 import threading
 import pygame
 from pygame.locals import *
